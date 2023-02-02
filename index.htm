@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <h1><font color="white"> discord invite generator</font></h1>
+     <style>
+      .discord-box {
+        width: 500px;
+        height: 300px;
+        border: 1px solid white;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        overflow: auto;
+        padding: 10px;
+        font-size: 18px;
+        margin: 10px;
+      }
+      .discord-btn {
+        background-color: #7289DA;
+        border: 1px solid white;
+        color: white;
+        padding: 15px 25px;
+        font-size: 18px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+     </style>
+  </head>
+  <body style="background-image: url('https://wallpaperaccess.com/full/5578381.jpg')">
+    <div class="discord-box" id="linkBox"></div>
+    <button class="discord-btn" id="startBtn">Start</button>
+    <button class="discord-btn" id="stopBtn">Stop</button>
+    <input
+      type="text"
+      placeholder="Discord Webhook URL"
+      id="webhookInput"
+      style="width: 500px; padding: 10px; font-size: 16px; margin: 10px;"
+    />
+    <script>
+      const linkBox = document.getElementById("linkBox");
+      const webhookInput = document.getElementById("webhookInput");
+      const startBtn = document.getElementById("startBtn");
+      const stopBtn = document.getElementById("stopBtn");
+      let linkInterval;
+      let links = [];
+
+      function generateLinks() {
+        links = [];
+        for (let i = 0; i < 10; i++) {
+          links.push("https://discord.gg/" + Math.random().toString(36).substr(2, 10));
+        }
+        linkBox.innerHTML = links.join("<br>");
+      }
+
+      function sendLinks() {
+        const webhook = webhookInput.value;
+        if (!webhook) {
+          alert("Please input Discord Webhook URL");
+          return;
+        }
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", webhook, true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.send(JSON.stringify({ content: links.join("\n") }));
+      }
+
+      startBtn.addEventListener("click", () => {
+        clearInterval(linkInterval);
+        linkInterval = setInterval(() => {
+          generateLinks();
+          sendLinks();
+        }, 2000);
+      });
+
+      stopBtn.addEventListener("click", () => {
+        clearInterval(linkInterval);
+        linkBox.innerHTML = "";
+      });
+    </script>
+
+  </body>
+</html>
